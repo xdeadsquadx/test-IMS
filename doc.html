@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<style>
+  body {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #1b1b32;
+    color: white;
+  }
+  .form{
+    background-color: #0f0f21;
+    padding: 20px;
+  }
+
+  .form-input label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .form-input {
+    margin: 10px;
+    width: max-content;
+
+  }
+
+  input {
+    max-width: 500px;
+    min-width: 300px;
+  }
+  table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;text-align: center;
+
+}
+button{
+  margin: 10px;
+  padding: 10px 20px 10px 20px;
+}
+
+#tabel.show {
+  display: table;
+}
+table{
+  display: none;
+}
+</style>
+
+<body>
+  <h1>Perhitungan Angsuran</h1>
+  <div class="form">
+      <div class="form-input">
+        <label for="ODP">ODP</label>
+        <input type="number" id="ODP">
+        rupiah
+      </div>
+      <div class="form-input">
+        <label for="ODP">DP</label>
+        <input type="number" id="DP">
+        persen
+      </div>
+      <div class="form-input">
+        <label for="ODP">Jangka Waktu</label>
+        <input type="number" id="JangkaWaktu">
+        bulan
+      </div>
+  </div>
+  <button>Submit</button>
+
+  <table id="tabel">
+    <thead>
+      <th>KONTRAK_NO</th>
+      <th>ANGURAN KE</th>
+      <th>ANGSURAN_PER_BULAN</th>
+      <th>TANGGAL_JATUH_TEMPO</th>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+</body>
+
+</html>
+<script>
+  document.querySelector("button").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    let odp = Number(document.getElementById("ODP").value);
+    let dp = Number(document.getElementById("DP").value);
+    let jangka_waktu = Number(document.getElementById("JangkaWaktu").value);
+    let tbody = document.querySelector("#tabel tbody");
+
+    tbody.innerHTML = "";
+
+    let dp_hasil = odp * dp / 100;
+    let pokok_utang = odp - dp_hasil;
+    let bunga;
+
+    switch (true) {
+      case jangka_waktu <= 12:
+        bunga = 12 / 100;
+        break;
+      case jangka_waktu <= 24:
+        bunga = 14 / 100;
+        break;
+      case jangka_waktu <= 36:
+        bunga = 16.5 / 100;
+        break;
+    }
+
+    let total_bunga = pokok_utang * bunga * (jangka_waktu / 12);
+    let total_pinjaman = pokok_utang + total_bunga;
+    let cicilan_per_bulan = Math.ceil((total_pinjaman / jangka_waktu) / 1000) * 1000;
+
+    document.querySelector("#tabel").classList.add("show");
+
+    let today = new Date();
+    today.setDate(1);
+
+    for (let i = 0; i < jangka_waktu; i++) {
+      let dueDate = new Date(today);
+      dueDate.setMonth(today.getMonth() + i);
+      let formattedDate = dueDate.toISOString().split("T")[0];
+
+      tbody.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>AGR00001</td>
+          <td>${i + 1}</td>
+          <td>Rp ${cicilan_per_bulan.toLocaleString()}</td>
+          <td>${formattedDate}</td>
+        </tr>
+      `);
+    }
+  });
+</script>
