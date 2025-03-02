@@ -103,17 +103,15 @@ table{
     let pokok_utang = odp - dp_hasil;
     let bunga;
 
-    switch (true) {
-      case jangka_waktu <= 12:
-        bunga = 12 / 100;
-        break;
-      case jangka_waktu <= 24:
-        bunga = 14 / 100;
-        break;
-      case jangka_waktu <= 36:
-        bunga = 16.5 / 100;
-        break;
-    }
+if (jangka_waktu <= 12) {
+  bunga = 12 / 100;
+} else if (jangka_waktu > 12 && jangka_waktu <= 24) {
+  bunga = 14 / 100;
+} else if (jangka_waktu > 24) {
+  bunga = 15 / 100; // Kalau ada kategori ini
+} else {
+  bunga = 0;
+}
 
     let total_bunga = pokok_utang * bunga * (jangka_waktu / 12);
     let total_pinjaman = pokok_utang + total_bunga;
